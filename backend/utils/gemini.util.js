@@ -11,23 +11,36 @@ if (!apiKey) {
 
 const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
 
-export async function generateText({ prompt, model = "gemini-1.5-flash" }) {
+export async function generateText({ prompt, model = "gemini-1.5-flash", temperature = 0.7 }) {
   if (!genAI) {
     throw new Error("Gemini client not initialized. Set GEMINI_API_KEY env var.");
   }
-  const genModel = genAI.getGenerativeModel({ model });
+
+  const genModel = genAI.getGenerativeModel({
+    model,
+    generationConfig: { temperature },
+  });
+
   const result = await genModel.generateContent(prompt);
   const response = await result.response;
-  const text = response.text();
-  return text;
+  return response.text();
 }
 
-export async function generateWithSystemAndUser({ system, user, model = "gemini-1.5-flash" }) {
+export async function generateWithSystemAndUser({
+  system,
+  user,
+  model = "gemini-1.5-flash",
+  temperature = 0.7,
+}) {
   if (!genAI) {
-    console.log(apiKey);
     throw new Error("Gemini client not initialized. Set GEMINI_API_KEY env var.");
   }
-  const genModel = genAI.getGenerativeModel({ model });
+
+  const genModel = genAI.getGenerativeModel({
+    model,
+    generationConfig: { temperature },
+  });
+
   const parts = [];
   if (system) {
     parts.push({ text: `SYSTEM\n${system}` });
@@ -35,6 +48,7 @@ export async function generateWithSystemAndUser({ system, user, model = "gemini-
   if (user) {
     parts.push({ text: `USER\n${user}` });
   }
+
   const result = await genModel.generateContent(parts);
   const response = await result.response;
   return response.text();

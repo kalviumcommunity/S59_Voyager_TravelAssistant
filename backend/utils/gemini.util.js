@@ -11,14 +11,14 @@ if (!apiKey) {
 
 const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
 
-export async function generateText({ prompt, model = "gemini-1.5-flash", temperature = 0.7, topK = 40 }) {
+export async function generateText({ prompt, model = "gemini-1.5-flash", temperature = 0.7, topK = 40, topP = 1.0 }) {
   if (!genAI) {
     throw new Error("Gemini client not initialized. Set GEMINI_API_KEY env var.");
   }
 
   const genModel = genAI.getGenerativeModel({
     model,
-    generationConfig: { temperature, topK },
+    generationConfig: { temperature, topK, topP },
   });
 
   const result = await genModel.generateContent(prompt);
@@ -31,7 +31,8 @@ export async function generateWithSystemAndUser({
   user,
   model = "gemini-1.5-flash",
   temperature = 0.7,
-  topK = 40
+  topK = 40,
+  topP = 1.0
 }) {
   if (!genAI) {
     throw new Error("Gemini client not initialized. Set GEMINI_API_KEY env var.");
@@ -39,7 +40,7 @@ export async function generateWithSystemAndUser({
 
   const genModel = genAI.getGenerativeModel({
     model,
-    generationConfig: { temperature, topK},
+    generationConfig: { temperature, topK, topP},
   });
 
   const parts = [];

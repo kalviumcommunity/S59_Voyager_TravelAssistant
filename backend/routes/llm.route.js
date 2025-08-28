@@ -1,12 +1,13 @@
 import express from "express";
 import { generateLLM, zeroShotItinerary, oneShotItinerary, multiShotItinerary, mockGenerate, mockZeroShot, mockOneShot, mockMultiShot } from "../controllers/llm.controller.js";
+import { logTokens } from "../middlewares/token.middleware.js";
 
 const router = express.Router();
 
-router.post("/llm/zero-shot", zeroShotItinerary);
-router.post("/llm/one-shot", oneShotItinerary);
-router.post("/llm/multi-shot", multiShotItinerary);
-router.post("/llm/generate", generateLLM);
+router.post("/llm/zero-shot", logTokens, zeroShotItinerary);
+router.post("/llm/one-shot", logTokens, oneShotItinerary);
+router.post("/llm/multi-shot", logTokens, multiShotItinerary);
+router.post("/llm/generate", logTokens, generateLLM);
 
 router.get("/mock/zero-shot", mockZeroShot);
 router.get("/mock/one-shot", mockOneShot);
